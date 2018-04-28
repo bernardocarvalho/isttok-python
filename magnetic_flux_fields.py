@@ -35,7 +35,7 @@ def subs(a, z0, R, z):
 def Aphi(a, z0, R, z):
     """
     rho, z0 coordinates of current ring (I=1A)
-    Poloidal Flux Phi=2*pi*Aphi
+    Poloidal Flux Phi=2*pi*R*Aphi
     """
     a2,R2,z2,alpha2,beta2,k2,C = subs(a, z0, R, z)
     #   a2=a*a
@@ -84,30 +84,49 @@ def Bzloop(a, z):
 
 def selfLoop(R, a, Y=0.5):
     """
+    Self inductance of a wire loop 
     Y = 0 if the current flows in the wire surface, 
     Y = 1/2 when the current is homogeneous across the wire.
     Ring with radius R.
     Wire with circular cross section, radius a
     https://aemjournal.org/index.php/AEM/article/view/331/pdf
+    checked agains https://www.eeweb.com/tools/loop-inductance (+/-)
     """
-    Lc= cnst.mu_0 * R *(np.log(R/a) -2 + Y/2) # + mu_0 O(a^2/R)
+    Lc= cnst.mu_0 * R *(np.log(8.0*R/a) - 2 + Y/2) # + mu_0 * O(a^2/R)
     
     return Lc
 
+def mutualL(a, z0, R, z):
+    """
+    Mutual inductance of two wire loops 
+    a, z0 coordinates of current ring (I=1A)
+    Poloidal Flux Phi=2*pi*Aphi
+    """
+    return 2*np.pi * R * Aphi(a, z0, R, z)
+
+#ISTTOK
+#
+rm = 0.085 #Minor radius
+RM = 0.46   # Major radius
+Rmirn = 0.0935  #Raio do centro às mirnov  9.35  
+
+n_pbrs = 12
+angles_pbr = np.array([(23./24 - i/n_pbrs)*2*np.pi for i in range(n_pbrs)])
+
+Rprb =RM + Rmirn * np.cos(angles_pbr)
+zprb =Rmirn * np.sin(angles_pbr)
+
+ISTTOK = {'RM': 0.46, 'rm': 0.085, 'Rmirn': 0.0935 , 'Rcopper': 0.105, 'n_pbrs':n_pbrs, \
+          'angles_pbr':angles_pbr, 'Rprb':Rprb , 'zprb':zprb }
 
 if __name__ == "__main__":
-    #ISTTOK
-    #
-    rm = 0.085 #Minor radius
-    RM = 0.46   # Major radius
-    Rmirn = 0.0935  #Raio do centro às mirnov  9.35  
     #Vertical Coils: 4 coils, 5 turns, R1,2=58 [cm],R2,3=35 [cm],z=±7 [cm]
     #
-    n = 12     # number of probes
-    angles_pbr = np.array([(23./24 - i/n)*2*np.pi for i in range(n)])
+    #n = 12     # number of probes
+    #angles_pbr = np.array([(23./24 - i/n)*2*np.pi for i in range(n)])
     #angles_pbr = np.array([(23./24 - i/n)*2*np.pi for i in range(n)])/np.pi*180.0
-    Rprb =RM + Rmirn * np.cos(angles_pbr)
-    zprb =Rmirn * np.sin(angles_pbr)
+    Rprb =ISTTOK['RM']+ ISTTOK['Rmirn'] * np.cos(angles_pbr)
+    zprb =ISTTOK['Rmirn'] * np.sin(angles_pbr)
     
     a=Aphi(0.46, 0.0, 0.2, 0)
     b=Bzloop(0.46, .1)
@@ -118,41 +137,27 @@ if __name__ == "__main__":
     # Rhor=0.58
     # Zhor =0.07
 
+    #Horizontal Coils: 2 coils , 4 turns, R1,2=58 [cm],z=±7[cm]
+    Rhor =[0.58, 0.58,]
+    Zhor =[0.07, -0.07]
+    HorTurns=[4., -4.]
+
     #Vertical Coils: 4 coils, 5 turns, R1,2=58 [cm],R2,3=35 [cm],z=±7 [cm]
-    Rhor =[0.58, 0.58, 0.35, 0.35]
-    Zhor =[0.07, -0.07, 0.07, -0.07]
+    Rver =[0.58, 0.58, 0.35, 0.35]
+    Zver =[0.07, -0.07, 0.07, -0.07]
     Turns=[-5., -5., 5., 5.]
     BR = 0.0 
     BZ = 0.0
     for i in range(len(Turns)):
-        br,bz=Bloop(Rhor[i], Zhor[i], Rprb, zprb)
+        br,bz=Bloop(Rver[i], Zver[i], Rprb, zprb)
         BR += Turns[i]*br
         BZ += Turns[i]*bz 
-#        
-#    BR = -nturns*br
-#    BZ = -nturns*bz
-#        
-#    BR = 0.0, BZ = 0.0
-#    BR = 0.0, BZ = 0.0
-#
-#    br,bz=Bloop(Rhor, Zhor, Rprb, zprb)
-#    BR = -nturns*br
-#    BZ = -nturns*bz
-#    Zhor = -0.07
-#    br,bz=Bloop(Rhor, Zhor, Rprb, zprb)
-#    BR -= nturns*br
-#    BZ -= nturns*bz
-#    
-#    Rhor=0.35
-#    br,bz=Bloop(Rhor, Zhor, Rprb, zprb)
-#    BR -= nturns*br
-#    BZ -= nturns*bz
-#    Zhor =0.07
-#    br,bz=Bloop(Rhor, Zhor, Rprb, zprb)
-#    BR -= nturns*br
-#    BZ -= nturns*bz
-      
+        
+        # mutual inductance matrices between the elements of the passive structure
     bpol, brad = BpolBrad(BR,BZ, angles_pbr)
+    Bpols=bpol # Poloidal field for I=1A in the coil (Vert)
+    
+#     
     np.set_printoptions(precision=3)
     print('Bpoloidal:')
     print(bpol)
