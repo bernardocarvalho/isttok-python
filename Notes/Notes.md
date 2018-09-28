@@ -34,7 +34,7 @@ BR:
 -2.29874772e-06, -2.16399310e-06, -1.91717786e-06, -1.81671306e-06, -6.08038578e-06, -2.01293760e-05]
 
   
-#28/04/2018 21:5
+### 28/04/2018 21:5
 
 Viva,
 
@@ -47,3 +47,8 @@ exponencial do modelo simples de passa-baixo.
 Penso que podemos discutir isto melhor, pois há alguma parametrização a fazer e claro uma 
 optimização com os resultados experimentais.
 Nesta altura a soma de correntes no cobre ainda não é nula, como tem de ser pelo facto do copper shell não ser fechado toroidalmente, mas tenho já ideia de como o fazer.
+
+## 28/09/2018 Shots Horizontal
+Humberto
+Num 44267 até #44272
+
