@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 #import scipy.constants as cnst
 
 import magnetic_flux_fields as mf
+from isttok_magnetics import isttok_mag
 
 
 if __name__ == "__main__":
@@ -38,16 +39,16 @@ if __name__ == "__main__":
 
     # Copper 'wires' positions
     anglesIc = np.array([(i/nc)*2*np.pi for i in range(nc)])
-    RIc = mf.ISTTOK['RM'] + mf.ISTTOK['Rcopper']  * np.cos(anglesIc)
-    ZIc = mf.ISTTOK['Rcopper']  * np.sin(anglesIc)
-    #Vertical Coils: 4 coils, 5 turns, R1,2=58 [cm],R2,3=35 [cm],z=±7 [cm]
-    Rver =[0.58, 0.58, 0.35, 0.35]
-    Zver =[0.07, -0.07, 0.07, -0.07]
-    VerTurns=[-5., -5., 5., 5.]
-    #Horizontal Coils: 2 coils , 4 turns, R1,2=58 [cm],z=±7[cm]
-    Rhor =[0.58, 0.58,]
-    Zhor =[0.07, -0.07]
-    HorTurns=[4., -4.]
+    RIc = isttok_mag['RM'] + isttok_mag['Rcopper']  * np.cos(anglesIc)
+    ZIc = isttok_mag['Rcopper']  * np.sin(anglesIc)
+#    #Vertical Coils: 4 coils, 5 turns, R1,2=58 [cm],R2,3=35 [cm],z=±7 [cm]
+#    Rver =[0.58, 0.58, 0.35, 0.35]
+#    Zver =[0.07, -0.07, 0.07, -0.07]
+#    VerTurns=[-5., -5., 5., 5.]
+#    #Horizontal Coils: 2 coils , 4 turns, R1,2=58 [cm],z=±7[cm]
+#    Rhor =[0.58, 0.58,]
+#    Zhor =[0.07, -0.07]
+#    HorTurns=[4., -4.]
 
     #RIc = ISTTOK['Rcopper'] * np.ones(nc) # Major radius of shell 'wires' 
     for i in range(nc):
@@ -57,18 +58,18 @@ if __name__ == "__main__":
             Mcc[j,i] = Mcc[i,j]
     for i in range(nc):
         Mcs[i,:] =0.0
-        for k in range(len(VerTurns)):
-            Mcs[i,0] += VerTurns[k] * mf.mutualL(Rver[k], Zver[k], RIc[i], ZIc[i])           
+        for k in range(len(isttok_mag['TurnsPfcVer'])):
+            Mcs[i,0] += isttok_mag['TurnsPfcVer'][k] * mf.mutualL(isttok_mag['RPfcVer'][k], isttok_mag['ZPfcVer'][k], RIc[i], ZIc[i])           
 #        for k in range(len(HorTurns)):
 #            Mcs[i,1] += HorTurns[k] * mf.mutualL(Rhor[k], Zhor[k], RIc[i], ZIc[i]) 
     
     # Poloidal field for I=1A in the ith copper 'wire'
-    Bpolc=np.zeros((nc, mf.ISTTOK['n_pbrs'])) 
-    #br,bz=mf.Bloop(RIc[0], ZIc[0], mf.ISTTOK['Rprb'], mf.ISTTOK['Rprb'])
-    #bpol, brad = mf.BpolBrad(br,bz, mf.ISTTOK['angles_pbr'])
+    Bpolc=np.zeros((nc, isttok_mag['n_pbrs'])) 
+    #br,bz=mf.Bloop(RIc[0], ZIc[0], isttok_mag['Rprb'], isttok_mag['Rprb'])
+    #bpol, brad = mf.BpolBrad(br,bz, isttok_mag['angles_pbr'])
     for i in range(nc):
-        br,bz=mf.Bloop(RIc[i], ZIc[i], mf.ISTTOK['Rprb'], mf.ISTTOK['Rprb'])
-        bpol, brad = mf.BpolBrad(br,bz, mf.ISTTOK['angles_pbr'])
+        br,bz=mf.Bloop(RIc[i], ZIc[i], isttok_mag['Rprb'], isttok_mag['Zprb'])
+        bpol, brad = mf.BpolBrad(br,bz, isttok_mag['angles_pbr'])
         Bpolc[i,:] = bpol 
     
     #https://apmonitor.com/pdc/index.php/Main/ModelSimulation
@@ -89,14 +90,14 @@ if __name__ == "__main__":
     
     BR = 0.0 
     BZ = 0.0
-    for i in range(len(Turns)):
-        br,bz=Bloop(Rver[i], Zver[i], Rprb, zprb)
-        BR += Turns[i]*br
-        BZ += Turns[i]*bz 
+    for c in range(len(isttok_mag['TurnsPfcVer'])):
+        br,bz=mf.Bloop(isttok_mag['RPfcVer'][c], isttok_mag['ZPfcVer'][c], isttok_mag['Rprb'], isttok_mag['Zprb'])
+        BR += isttok_mag['TurnsPfcVer'][c]*br
+        BZ += isttok_mag['TurnsPfcVer'][c]*bz 
 
+    plt.figure()
 #    plt.plot(t2,y2,'g:',linewidth=2,label='State Space')
     lineObjects = plt.plot(t,ic,linewidth=1)
-
     plt.xlabel('Time')
     plt.ylabel('Response (y)')
     plt.legend(lineObjects, ['ic0', 'ic1', 'ic2','ic3', 'ic4', 'ic5'],loc='best')
