@@ -35,7 +35,8 @@ if __name__ == "__main__":
     # and active coils
     Mcs=np.zeros((nc,ns))
     # diagonal resistance matrix Rc
-    Rc = np.diag([1.0e-4, 0.5e-4, 1.0e-4, 1.0e-4, 1.0e-4, 1.0e-4])
+#    Rc = np.diag([1.0e-4, 0.5e-4, 1.0e-4, 1.0e-4, 1.0e-4, 1.0e-4])
+    Rc = np.diag([1.0e-4, 0.5e-4, 1.0e-4, 1.5e-4, 1.0e-4, 0.6e-4])
 
     # Copper 'wires' positions
     anglesIc = np.array([(i/nc)*2*np.pi for i in range(nc)])
@@ -86,6 +87,7 @@ if __name__ == "__main__":
     # Stability
     w, vect = np.linalg.eig(A)
     # Eigenvalues should all be negative
+    print('Eigenvalues:')
     print(w)
     
     BR = 0.0 
@@ -98,10 +100,20 @@ if __name__ == "__main__":
     plt.figure()
 #    plt.plot(t2,y2,'g:',linewidth=2,label='State Space')
     lineObjects = plt.plot(t,ic,linewidth=1)
-    plt.xlabel('Time')
-    plt.ylabel('Response (y)')
+    plt.xlabel('Time/s')
+    plt.ylabel('Response ((ic) /A ')
     plt.legend(lineObjects, ['ic0', 'ic1', 'ic2','ic3', 'ic4', 'ic5'],loc='best')
     plt.show()
+    
+    plt.figure()
+    #
+    lineObjs = plt.plot(t,np.matmul(ic,Bpolc) )
+    plt.xlabel('Time/s')
+    plt.ylabel('Bpol ')
+    plt.legend(lineObjs, ['m0', 'm1', 'm2','m3', 'm4', 'm5','m6', \
+                             'm7', 'm8','m9', 'm10', 'm11'],loc='right')
+    plt.show()
+        
 
             
 
