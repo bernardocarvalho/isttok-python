@@ -17,7 +17,7 @@ BZ:
 [-3.773e-07 -5.057e-07 -7.435e-07 -1.352e-06 -3.420e-06 -7.041e-07
   2.385e-07  1.198e-07 -2.388e-08 -1.307e-07 -2.132e-07 -2.892e-07]
   
-  
+ Polarity -1 -1 1 -1  1 1 1 1  1 1 -1 1 1  
 ## Horizontal Coils: 2 coils , 4 turns, R1,2=58 [cm],z=±7[cm]
 
 Bpoloidal :
@@ -33,6 +33,7 @@ BR:
 [-2.01293760e-05, -6.08038578e-06, -1.81671306e-06, -1.91717786e-06, -2.16399310e-06, -2.29874772e-06, 
 -2.29874772e-06, -2.16399310e-06, -1.91717786e-06, -1.81671306e-06, -6.08038578e-06, -2.01293760e-05]
 
+# Setembr Toquim mudou os ganhos. Trocou o andar de entrada, Filtro 1nF 
   
 ### 28/04/2018 21:5
 
@@ -48,7 +49,21 @@ Penso que podemos discutir isto melhor, pois há alguma parametrização a fazer
 optimização com os resultados experimentais.
 Nesta altura a soma de correntes no cobre ainda não é nula, como tem de ser pelo facto do copper shell não ser fechado toroidalmente, mas tenho já ideia de como o fazer.
 
-## 28/09/2018 Shots Horizontal
+## 28/09/2018 
+Shots Horizontal
 Humberto
 Num 44267 até #44272
+44267 slopes
+[ 0.0097 -0.0602  0.002  -0.0103 -0.1549 -0.1806 
+-0.1022 -0.1603 -0.1589  0.0072 -0.2403 -0.16  ]
+  
+
+Shots Vertical #44278
+
+[-0.0452 -0.1018 -0.0039 -0.0022 -0.1448 -0.2128 
+-0.1636 -0.1808 -0.1323  0.0107 -0.2344 -0.1615]
+  
+Shot Plasma # #44281
+
+
 
