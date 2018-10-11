@@ -1,12 +1,12 @@
 from sdas.core.SDAStime import Date, Time, TimeStamp
 import numpy as np
-from StartSdas import StartSdas
+#from StartSdas import StartSdas
 
-client = StartSdas()
+#client = StartSdas()
 
 #signal + time
-def getSignal(channelID, shotNr):
-    signalStructArray=client.getData(channelID,'0x0000', shotNr)
+def getSignal(sdasClient, channelID, shotNr):
+    signalStructArray=sdasClient.getData(channelID,'0x0000', shotNr)
     signalStruct=signalStructArray[0]
     signal=signalStruct.getData()
     tstart = signalStruct.getTStart()
@@ -20,4 +20,4 @@ def getSignal(channelID, shotNr):
     delay = tstart.getTimeInMicros() - tevent.getTimeInMicros()
     #Finally create the time array
     times = np.linspace(delay,delay+tbs*(len(signal)-1),len(signal))
-    return (signal, times, tbs)
+    return times, signal, tbs

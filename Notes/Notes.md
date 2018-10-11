@@ -65,5 +65,9 @@ Shots Vertical #44278
   
 Shot Plasma # #44281
 
+ Nshot=44355 # Plasma 30 Pulses
 
+Nshot=44360 # Plasma 10 Pulses
+Hugo 44354 foi o melhorzinho mas se calhar preferes os que vêm a seguir até ao 44364 por serem mais parecidos entre si.
+T=-1000 e - 900 são o WO usado como correcção, de - 800 a -300 são 6 WOs em 6 segundos consecutivos para se ter uma ideia da variação 
 

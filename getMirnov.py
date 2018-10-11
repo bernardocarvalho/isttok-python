@@ -2,7 +2,8 @@
 #computes horizontal and vertical displacement from the mirnovs
 
 import matplotlib.pyplot as plt
-from getSdasSignal import *
+from getSdasSignal import getSignal
+from StartSdas import StartSdas
 import numpy as np
 
 
@@ -58,24 +59,33 @@ FsamplingADC = 2.0e6
 decimateMARTe = 200.0
 FsamplingMARTe = FsamplingADC / 200.0
 
-WoCorr = np.array([-0.0325337 , -0.05863128,  0.00061454, -0.003177  , 
+#Horizontal Field 44330
+#WoCorr = np.array([-0.0325337 , -0.05863128,  0.00061454, -0.003177  , 
+#      -0.164716, -0.20480262, -0.14225489, -0.16451567, 
+#      -0.17596099, -0.04254242, -0.23460759, -0.20731911])
+
+WoCorr = np.array([-0.15 , -0.06,  0.00061454, -0.003177  , 
       -0.164716, -0.20480262, -0.14225489, -0.16451567, 
       -0.17596099, -0.04254242, -0.23460759, -0.20731911])
+
 #
-def getMirnovInt(shot_, correctPost=False, node=mirnv_int):
+       #        slp = (coilData[-1] / times[-1] /1e-6) / FsamplingADC  # inn LSB
+       #    slope=np.linspace(np.mean(coilData[0:f]), np.mean(coilData[-f-1:-1]), num=len(coilData))
+
+def getMirnovInt(sdasClient, shot_, correctPre=False, node=mirnv_int):
     coilNr=0
     data=[]
     slopes=[]
     for coil in node:
-        coilData, times, tbs = getSignal(coil, shot_)
-        if correctPost:
+        times, coilData, tbs = getSignal(sdasClient, coil, shot_)
+        if correctPre:
             lineWo = WoCorr[coilNr] * np.arange(len(times)) * decimateMARTe
             coilData=coilData - lineWo
         coilNr +=1
-        slp = (coilData[-1] / times[-1] /1e-6) / FsamplingADC  # inn LSB
-        #    slope=np.linspace(np.mean(coilData[0:f]), np.mean(coilData[-f-1:-1]), num=len(coilData))
-        if coilNr in [1,2,4,11]:
-            coilData=-coilData #reverse polarity
+        LastPt = -300
+        slp = coilData[LastPt] /(len(times) + LastPt) / decimateMARTe # in LSB
+#        if coilNr in [1,2,4,11]:
+#            coilData=-coilData #reverse polarity
         data.append(coilData)
         slopes.append(slp)
     slpf= np.array(slopes)   
@@ -84,14 +94,26 @@ def getMirnovInt(shot_, correctPost=False, node=mirnv_int):
     print(times[-1])
     return times, data
 
-def getWoMirnov(shot_, node=mirnv_int):
+def calcPostWoMirnov(sdasClient, shot_= 0, node=mirnv_int):
     slopes=[]
     for coil in node:
-        coilData, times, tbs = getSignal(coil, shot_)
+        times, coilData, tbs = getSignal(sdasClient, coil, shot_)
         postWo = coilData[-1] / len(times) /decimateMARTe#  times[-1] /1e-6) / Fsampling  # inn LSB
         slopes.append(postWo)
     WoArr = np.array(slopes)   
     return WoArr
+
+def getMARTeWo(sdasClient, coilNr=0, shot_=0):
+#    node=mirnv_int
+    coil = mirnv_marte_corr[coilNr]
+    times, coilData, tbs = getSignal(sdasClient, coil, shot_)
+#    slopes=[]
+#    for coil in node:
+#        coilData, times, tbs = getSignal(sdasClient, coil, shot_)
+#        postWo = coilData[-1] / len(times) /decimateMARTe#  times[-1] /1e-6) / Fsampling  # inn LSB
+#        slopes.append(postWo)
+    WoNumbers = coilData[0:10] * 1e10 # To rescale to LSB  
+    return WoNumbers
 
 #SAVES MIRNOV DATA IN A LIST OF NP.ARRAYS
 def getMirnovs(shot_, node=mirnv_marte_corr, correct=True):
@@ -100,7 +122,7 @@ def getMirnovs(shot_, node=mirnv_marte_corr, correct=True):
 
     for coil in node:
         coilNr+=1
-        coilData, times, tbs = getSignal(coil, shot_)
+        times, coilData, tbs = getSignal(sdasClient, coil, shot_)
         if correct:
             f=100 #correction length for slope calculation
             slope=0.0
@@ -130,7 +152,7 @@ def getMirnovs2(shot_, node=mirnv_marte_corr, ADC=False, polarity=True, slope=Fa
             pol=-1.
         else:
             pol=1.
-        coilData, times, tbs = getSignal(coil, shot_)
+        times, coilData, tbs = getSignal(sdasClient, coil, shot_)
         #correct slope
         sl=np.zeros(len(coilData))
         if slope and node==mirnv_int:
@@ -170,7 +192,8 @@ def plotMirnov(times_, data_, show=True, title=''):
         plt.show()
 
 if __name__ == "__main__":
+    client = StartSdas()
     #vertical coils
-    plotAll(*getMirnovs(42952,mirnv_int,True), show=False, title="Vertical Field Coils")
+    plotAll(*getMirnovs(client, 42952,mirnv_int,True), show=False, title="Vertical Field Coils")
     #horizontal coils
-    plotAll(*getMirnovs(42966,mirnv_int,True), show=True, title="Horizontal Field Coils")
+    plotAll(*getMirnovs(client, 42966,mirnv_int,True), show=True, title="Horizontal Field Coils")
