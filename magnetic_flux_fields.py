@@ -19,6 +19,9 @@ import scipy.special as spcl
 
 def subs(a, z0, R, z):
     """
+    calculation of Elliptic Integrals and helper functions
+    See:
+    https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.ellipk.html
 
     """
     a2=a*a
@@ -34,26 +37,44 @@ def subs(a, z0, R, z):
 
 def Aphi(a, z0, R, z):
     """
-    rho, z0 coordinates of current ring (I=1A)
-    Poloidal Flux Phi=2*pi*R*Aphi
+    Magnetic Vector  potencial created by an axisymetric current ring at a,z0 (I=1A) in (R,Z)
+    Calculation by Elliptic Integrals
+    Args:
+        a:  Major radius of the current ring.
+        z0: vertical position of the current ring.
+        R:  Radial coordinate of potencial position.
+        Z:  Zertical coordinate of potencial position.
+    
+    Returns:
+        Aphi: Vector  potencial .
+    
+    Raises:
+
+        rho, z0 coordinates of current ring (I=1A)
+    Magnetic Poloidal Flux = Psi=2*pi*R*Aphi
     """
     a2,R2,z2,alpha2,beta2,k2,C = subs(a, z0, R, z)
-    #   a2=a*a
-    #   R2=R*R
-    #   z2=np.square(z-z0)
-    #   alpha2=a2 + R2 + z2 - 2.0 * a*R
-    #   beta2 =a2 + R2 + z2 + 2.0 * a*R
-    #   #k2=m
-    #   k2 = 1.0 - alpha2/beta2
-    #   C = cnst.mu_0 /np.pi
-    #https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.ellipk.html
+
     Aphi= ((2 - k2) * spcl.ellipk(k2) - 2 * spcl.ellipe(k2)) / k2
     Aphi=  Aphi * 4 * a  / np.sqrt(beta2)
     Aphi=  Aphi * C / 4.0
     return Aphi
 
 def Bloop(a, z0, R, z):
-    "rho, z0 coordinates of current ring (I=1A)"
+    """
+    Poloida Magnetic field created by an axisymetric current ring at a,z0 (I=1A) in (R,Z)
+    Calculation by Elliptic Integrals
+
+    Args:
+        a:  Major radius of the current ring.
+        z0: vertical position of the current ring.
+        R:  Radial coordinate of vector position.
+        Z:  Zertical coordinate of vector position.
+    
+    Returns:
+        BR, BZ: Radial and vertical components of fields .
+
+    """
     a2,R2,z2,alpha2,beta2,k2,C = subs(a, z0, R, z)
     Bz=C / 2.0 / alpha2 / np.sqrt(beta2)
     BR=Bz*(z-z0)/R
@@ -62,14 +83,18 @@ def Bloop(a, z0, R, z):
     return BR, Bz
 
 def BpolBrad(BR,BZ, angles):
-    ""
+    """
+    Poloidal Magnetic field created by an axisymetric current ring at a,z0 (I=1A) in (R,Z)
+    but in Poloidal and Radial components 
+
+    """
     Bpol=BZ* np.cos(angles) - BR* np.sin(angles)
     Brad=BZ* np.sin(angles) + BR* np.cos(angles)
     return Bpol, Brad
 
 def Bzloop(a, z):
     """
-    Field on Axis of Current Loop  (I=1A)
+    Vertical Bz Field on Axis by Current Loop  (I=1A)
     Checked against
     Bzloop(1, 0)    = 6.283185307179586e-07 T
     Bzloop(0.1, .1) = 2.221441469079183e-06

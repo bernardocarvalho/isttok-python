@@ -26,7 +26,7 @@ if __name__ == "__main__":
     np.set_printoptions(precision=3)
     nc = 6 # number of copper shell 'wires'
     ns = 1 # number of active coils
-    ResCopper = 1.0e-4 # 1 mOhm
+    ResCopper = 1.0e-4 # 0.1 mOhm
     aCopper = 10.0e-3  # 'wire' radius 10 mm
     
     # mutual inductance matrices between the elements of the passive structure
@@ -36,20 +36,14 @@ if __name__ == "__main__":
     Mcs=np.zeros((nc,ns))
     # diagonal resistance matrix Rc
 #    Rc = np.diag([1.0e-4, 0.5e-4, 1.0e-4, 1.0e-4, 1.0e-4, 1.0e-4])
-    Rc = np.diag([1.0e-4, 0.5e-4, 1.0e-4, 1.5e-4, 1.0e-4, 0.6e-4])
+#    Rc = np.diag([1.0e-4, 0.5e-4, 1.0e-4, 1.5e-4, 1.0e-4, 0.6e-4])
+    Rc = np.diag([1.0, 0.5, 1.0, 1.5, 1.0, 0.6]) * ResCopper
 
     # Copper 'wires' positions
     anglesIc = np.array([(i/nc)*2*np.pi for i in range(nc)])
     RIc = isttok_mag['RM'] + isttok_mag['Rcopper']  * np.cos(anglesIc)
     ZIc = isttok_mag['Rcopper']  * np.sin(anglesIc)
-#    #Vertical Coils: 4 coils, 5 turns, R1,2=58 [cm],R2,3=35 [cm],z=±7 [cm]
-#    Rver =[0.58, 0.58, 0.35, 0.35]
-#    Zver =[0.07, -0.07, 0.07, -0.07]
-#    VerTurns=[-5., -5., 5., 5.]
-#    #Horizontal Coils: 2 coils , 4 turns, R1,2=58 [cm],z=±7[cm]
-#    Rhor =[0.58, 0.58,]
-#    Zhor =[0.07, -0.07]
-#    HorTurns=[4., -4.]
+
 
     #RIc = ISTTOK['Rcopper'] * np.ones(nc) # Major radius of shell 'wires' 
     for i in range(nc):
@@ -74,15 +68,18 @@ if __name__ == "__main__":
         Bpolc[i,:] = bpol 
     
     #https://apmonitor.com/pdc/index.php/Main/ModelSimulation
-    # Model 
+    # Model dot(Psi_c) = A * Psi_c + [Bp + Bpfc] [ip; ipfc]
+    # ic = C * Psi_c + [Dp + Dpfc] [ip; ipfc]
+    # State variable Psi_c (Pol Flux at the eddy current positions)
+    #
     invMcc = np.linalg.inv(Mcc)
     A = -np.matmul(Rc,invMcc)
     Bs = -np.matmul(A,Mcs)
     C = invMcc
     Ds =-np.matmul(invMcc,Mcs)
     
-    sys = signal.StateSpace(A,Bs,C,Ds)
-    t,ic = signal.step(sys)
+    magSys = signal.StateSpace(A,Bs,C,Ds)
+    t,ic = signal.step(magSys)
     
     # Stability
     w, vect = np.linalg.eig(A)
@@ -92,7 +89,7 @@ if __name__ == "__main__":
     
     BR = 0.0 
     BZ = 0.0
-    for c in range(len(isttok_mag['TurnsPfcVer'])):
+    for c in range(len(isttok_mag['RPfcVer'])):
         br,bz=mf.Bloop(isttok_mag['RPfcVer'][c], isttok_mag['ZPfcVer'][c], isttok_mag['Rprb'], isttok_mag['Zprb'])
         BR += isttok_mag['TurnsPfcVer'][c]*br
         BZ += isttok_mag['TurnsPfcVer'][c]*bz 
