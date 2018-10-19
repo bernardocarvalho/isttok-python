@@ -89,9 +89,9 @@ def getMirnovInt(sdasClient, shot_, correctPre=False, node=mirnv_int):
         data.append(coilData)
         slopes.append(slp)
     slpf= np.array(slopes)   
-    print(np.array2string(slpf, precision=4))        
+    #print(np.array2string(slpf, precision=4))        
     #print(slopes)        
-    print(times[-1])
+    #print(times[-1])
     return times, data
 
 def calcPostWoMirnov(sdasClient, shot_= 0, node=mirnv_int):
@@ -182,6 +182,37 @@ def plotAll(times_, data_, show=True, title=''):
     if show:
         plt.show()
 
+#PLOTS ALL DATA FROM MIRNOVS
+def plotAll2(times_, data_, show=True, title=''):
+    #plt.figure()
+    fig, axs = plt.subplots(4, 4, sharex=True)
+    coilNr=0
+    fig.suptitle(title)
+   # ax=[]
+    ylim=2.0e6 # Y Axis limit
+    #pltOrder = (11, )  
+    pltRow =    (2, 3,3,3,3, 2 , 1, 0,0,0,0, 1 )  
+    pltColumn = (3, 3,2,1,0, 0 , 0, 0,1,2,3, 3 )  
+   # pltColumn = (11, )  
+    axs[0,0].set_title('8')
+    axs[0,3].set_title('11')
+    axs[1,1].axis('off')
+    axs[1,2].axis('off')
+    axs[2,2].axis('off')
+    axs[2,1].axis('off')
+    for coil in data_:
+        ax=axs[pltRow[coilNr], pltColumn[coilNr]]
+#        axs[pltRow[coilNr], pltColumn[coilNr]].plot(times_*1e-3, coil)
+        ax.plot(times_*1e-3, coil)
+        ax.ticklabel_format(style='sci',axis='y', scilimits=(0,0))
+        ax.grid(True)
+        ax.set_ylim([-ylim, ylim])
+        coilNr+=1
+        #ax.set_title(str(coilNr))
+        
+    if show:
+        plt.show()
+        
 #PLOTS ONE MIRNOV
 def plotMirnov(times_, data_, show=True, title=''):
     plt.figure()
@@ -193,7 +224,10 @@ def plotMirnov(times_, data_, show=True, title=''):
 
 if __name__ == "__main__":
     client = StartSdas()
+    Nshot=44278 #Vertical Field
     #vertical coils
-    plotAll(*getMirnovs(client, 42952,mirnv_int,True), show=False, title="Vertical Field Coils")
+    plotAll2(*getMirnovInt(client, Nshot,correctPre=False), show=True, title="Vertical Field Coils # " +str(Nshot))
+    Nshot=44330 # Horizontal Field
     #horizontal coils
-    plotAll(*getMirnovs(client, 42966,mirnv_int,True), show=True, title="Horizontal Field Coils")
+    plotAll2(*getMirnovInt(client, Nshot,correctPre=False), show=True, title="Horizontal Field Coils # " +str(Nshot))
+#    plotAll(*getMirnovs(client, 42966,mirnv_int,True), show=True, title="Horizontal Field Coils")

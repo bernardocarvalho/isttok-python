@@ -84,8 +84,8 @@ def Bloop(a, z0, R, z):
 
 def BpolBrad(BR,BZ, angles):
     """
-    Poloidal Magnetic field created by an axisymetric current ring at a,z0 (I=1A) in (R,Z)
-    but in Poloidal and Radial components 
+    Transformation from Vector in Cylindrical (R,Z) components to 
+    Poloidal and Radial components 
 
     """
     Bpol=BZ* np.cos(angles) - BR* np.sin(angles)
