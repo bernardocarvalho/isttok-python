@@ -72,21 +72,31 @@ WoCorr = np.array([-0.15 , -0.06,  0.00061454, -0.003177  ,
        #        slp = (coilData[-1] / times[-1] /1e-6) / FsamplingADC  # inn LSB
        #    slope=np.linspace(np.mean(coilData[0:f]), np.mean(coilData[-f-1:-1]), num=len(coilData))
 
-def getMirnovInt(sdasClient, shot_, correctPre=False, node=mirnv_int):
+def getMirnovInt(sdasClient, shot_, correctWO='None', correctPol=True):
+    node=mirnv_int
     coilNr=0
     data=[]
     slopes=[]
     for coil in node:
         times, coilData, tbs = getSignal(sdasClient, coil, shot_)
-        if correctPre:
+        slp = 0.0
+        if correctWO == 'Pre':
             lineWo = WoCorr[coilNr] * np.arange(len(times)) * decimateMARTe
             coilData=coilData - lineWo
+        
+        if correctWO == 'Post':
+            LastPt = 300
+            slp = coilData[-LastPt] /(len(coilData) - LastPt) #/ decimateMARTe # in LSB
+            lineWo=np.arange(len(coilData)) * slp
+            coilData=coilData - lineWo
+            #slope = np.linspace(0.0, slp * len(coilData), num=len(coilData))
         coilNr +=1
-        LastPt = -300
-        slp = coilData[LastPt] /(len(times) + LastPt) / decimateMARTe # in LSB
-#        if coilNr in [1,2,4,11]:
-#            coilData=-coilData #reverse polarity
-        data.append(coilData)
+        if correctPol:
+            if coilNr in [1,2,4,11]:
+                coilData=-coilData #reverse polarity
+#        coilNr +=1
+        data.append(coilData *0.85e-10 )
+        slp = slp / decimateMARTe # in LSB
         slopes.append(slp)
     slpf= np.array(slopes)   
     #print(np.array2string(slpf, precision=4))        
@@ -183,13 +193,13 @@ def plotAll(times_, data_, show=True, title=''):
         plt.show()
 
 #PLOTS ALL DATA FROM MIRNOVS
-def plotAll2(times_, data_, show=True, title=''):
+def plotAll2(times_, data_, show=True, title='',  ylim=0.0):
     #plt.figure()
     fig, axs = plt.subplots(4, 4, sharex=True)
     coilNr=0
     fig.suptitle(title)
    # ax=[]
-    ylim=2.0e6 # Y Axis limit
+    #ylim=2.0e6 # Y Axis limit
     #pltOrder = (11, )  
     pltRow =    (2, 3,3,3,3, 2 , 1, 0,0,0,0, 1 )  
     pltColumn = (3, 3,2,1,0, 0 , 0, 0,1,2,3, 3 )  
@@ -206,7 +216,8 @@ def plotAll2(times_, data_, show=True, title=''):
         ax.plot(times_*1e-3, coil)
         ax.ticklabel_format(style='sci',axis='y', scilimits=(0,0))
         ax.grid(True)
-        ax.set_ylim([-ylim, ylim])
+        if ylim >0.0:
+            ax.set_ylim([-ylim, ylim])
         coilNr+=1
         #ax.set_title(str(coilNr))
         

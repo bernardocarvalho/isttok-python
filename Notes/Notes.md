@@ -49,6 +49,11 @@ Penso que podemos discutir isto melhor, pois há alguma parametrização a fazer
 optimização com os resultados experimentais.
 Nesta altura a soma de correntes no cobre ainda não é nula, como tem de ser pelo facto do copper shell não ser fechado toroidalmente, mas tenho já ideia de como o fazer.
 
+## Andre Shots
+shotV=42952 Ipfc = 340A
+shotH=42966 Ipfc = 260A
+shotP=43066
+
 ## 28/09/2018 
 Shots Horizontal
 Humberto
