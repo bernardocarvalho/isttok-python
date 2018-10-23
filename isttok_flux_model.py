@@ -130,6 +130,58 @@ def buildIs2Bpol():
     return Is2Bpol
 
 
+def buildIs2BpolA(Vcoil,Hcoil=None,PrimCoil=None):
+    """
+    Build B poloidal response Matrix on the poloidal field probes from a set of 
+    PFC coil circuits (Vertical + Horizontal)
+    Gives poloidal field on each probe for a Is=1A on coils    
+    #
+
+    Args:
+        Vcoil: numpy.array([RPfcVer,ZPfcVer,TurnsPfcVer])
+        
+    Returns: 
+        Is2Bpol :
+    """
+    ns = 1 # number of PFC active independent coils circuits (sources)
+    
+#    Vertical Coils
+    for k in range(len(turnsV)):
+        br,bz= mf.Bloop(RPfcVer[k], ZPfcVer[k], Rprb, Zprb)
+        bpol, brad = mf.BpolBrad(br,bz, tethaProb)
+        Is2Bpol[:,0] += turnsV[k] * bpol
+        
+#       number of poloidal probes
+
+    nPrb = isttok_mag['nPrb']
+    
+    Rprb = isttok_mag['Rprb']
+    Zprb = isttok_mag['Zprb']
+    tethaProb = isttok_mag['tethaPrb']
+    
+    turnsV  = isttok_mag['TurnsPfcVer']
+    RPfcVer = isttok_mag['RPfcVer']
+    ZPfcVer = isttok_mag['ZPfcVer']
+    
+    turnsH  = isttok_mag['TurnsPfcHor']
+    RPfcHor = isttok_mag['RPfcHor']
+    ZPfcHor = isttok_mag['ZPfcHor']
+    
+    Is2Bpol=np.zeros((nPrb, ns))
+#    Vertical Coils
+    for k in range(len(turnsV)):
+        br,bz= mf.Bloop(RPfcVer[k], ZPfcVer[k], Rprb, Zprb)
+        bpol, brad = mf.BpolBrad(br,bz, tethaProb)
+        Is2Bpol[:,0] += turnsV[k] * bpol
+
+#    Horizontal Coils
+    for k in range(len(turnsH)):
+        br,bz= mf.Bloop(RPfcHor[k], ZPfcHor[k], Rprb, Zprb)
+        bpol, brad = mf.BpolBrad(br,bz, tethaProb)
+        Is2Bpol[:,1] += turnsH[k] * bpol
+
+    return Is2Bpol
+
 def buildIc2Bpol(RIc, ZIc):
     """
     Build B poloidal response Matrix on the poloidal field probes from a set of filaments
