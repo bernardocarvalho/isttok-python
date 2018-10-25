@@ -143,43 +143,25 @@ def buildIs2BpolA(Vcoil,Hcoil=None,PrimCoil=None):
     Returns: 
         Is2Bpol :
     """
-    ns = 1 # number of PFC active independent coils circuits (sources)
-    
-#    Vertical Coils
-    for k in range(len(turnsV)):
-        br,bz= mf.Bloop(RPfcVer[k], ZPfcVer[k], Rprb, Zprb)
-        bpol, brad = mf.BpolBrad(br,bz, tethaProb)
-        Is2Bpol[:,0] += turnsV[k] * bpol
-        
+    ns = 2 # number of PFC active independent coils circuits (sources)
 #       number of poloidal probes
-
-    nPrb = isttok_mag['nPrb']
-    
+    nPrb = isttok_mag['nPrb']    
+        
     Rprb = isttok_mag['Rprb']
     Zprb = isttok_mag['Zprb']
     tethaProb = isttok_mag['tethaPrb']
-    
-    turnsV  = isttok_mag['TurnsPfcVer']
-    RPfcVer = isttok_mag['RPfcVer']
-    ZPfcVer = isttok_mag['ZPfcVer']
-    
-    turnsH  = isttok_mag['TurnsPfcHor']
-    RPfcHor = isttok_mag['RPfcHor']
-    ZPfcHor = isttok_mag['ZPfcHor']
-    
+
     Is2Bpol=np.zeros((nPrb, ns))
+
 #    Vertical Coils
-    for k in range(len(turnsV)):
-        br,bz= mf.Bloop(RPfcVer[k], ZPfcVer[k], Rprb, Zprb)
+    for k in range(Vcoil.shape[0]):
+        br,bz= mf.Bloop(Vcoil[k,0], Vcoil[k,1], Rprb, Zprb)
         bpol, brad = mf.BpolBrad(br,bz, tethaProb)
-        Is2Bpol[:,0] += turnsV[k] * bpol
+        Is2Bpol[:,0] += Vcoil[k,2] * bpol
+    
+    #if Hcoil != None :    
 
 #    Horizontal Coils
-    for k in range(len(turnsH)):
-        br,bz= mf.Bloop(RPfcHor[k], ZPfcHor[k], Rprb, Zprb)
-        bpol, brad = mf.BpolBrad(br,bz, tethaProb)
-        Is2Bpol[:,1] += turnsH[k] * bpol
-
     return Is2Bpol
 
 def buildIc2Bpol(RIc, ZIc):
@@ -216,6 +198,16 @@ def buildIc2Bpol(RIc, ZIc):
 #        BZ += Turns[i]*bz 
 
 if __name__ == "__main__":
+ Vcl1=np.array([
+       [ 0.60,  0.08, -1.  ],
+       [ 0.59,  0.07, -1.  ],
+       [ 0.58,  0.07, -1.  ],
+       [ 0.59,  0.07, -1.  ],
+       [ 0.60,  0.08, -1.  ],
+
+       [ 0.58, -0.07, -5.  ],
+       [ 0.35,  0.07,  5.  ],
+       [ 0.35, -0.07,  5.  ]])
     np.set_printoptions(precision=3)
     nc = 6 # number of copper shell 'wires'
 #    ns = 1 # number of active coils
