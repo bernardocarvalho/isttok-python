@@ -65,6 +65,8 @@ Num 44267 até #44272
 
 Shots Vertical #44278
 
+44330 - Horizontal,
+
 [-0.0452 -0.1018 -0.0039 -0.0022 -0.1448 -0.2128 
 -0.1636 -0.1808 -0.1323  0.0107 -0.2344 -0.1615]
   
@@ -76,3 +78,10 @@ Nshot=44360 # Plasma 10 Pulses
 Hugo 44354 foi o melhorzinho mas se calhar preferes os que vêm a seguir até ao 44364 por serem mais parecidos entre si.
 T=-1000 e - 900 são o WO usado como correcção, de - 800 a -300 são 6 WOs em 6 segundos consecutivos para se ter uma ideia da variação 
 
+BiotSart form Andre
+H2
+Out[135]: 
+array([ 1.45132498e-08,  1.59595068e-07,  1.24699365e-08,  2.11370544e-10,
+       -2.11251399e-09, -2.24109804e-09, -1.90269723e-09, -3.09836179e-09,
+       -1.02211276e-08, -4.52153503e-08, -4.51707203e-08, -7.60930718e-09])
+       

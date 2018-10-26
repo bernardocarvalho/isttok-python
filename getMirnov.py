@@ -95,10 +95,14 @@ def getMirnovInt(sdasClient, shot_, correctWO='None', correctPol=True):
             if coilNr in [1,2,4,11]:
                 coilData=-coilData #reverse polarity
 #        coilNr +=1
-        data.append(coilData *0.85e-10 )
+        if shot_ > 44000:     # Check this numer    
+            data.append(coilData * 0.85e-10 /11.0 ) # Return values in V.s units
+        else:
+            data.append(coilData * 0.85e-10 ) # Return values in V.s units
         slp = slp / decimateMARTe # in LSB
         slopes.append(slp)
-    slpf= np.array(slopes)
+    
+    #slpf= np.array(slopes)
     #print(np.array2string(slpf, precision=4))
     #print(slopes)
     #print(times[-1])
@@ -192,8 +196,13 @@ def plotAll(times_, data_, show=True, title=''):
     if show:
         plt.show()
 
-#PLOTS ALL DATA FROM MIRNOVS
-def plotAll2(times_, data_, show=True, title='',  ylim=0.0):
+
+def plotAllPoloid(times_, dataArr, show=True, title='',  ylim=0.0):
+    """
+    PLOTS ALL DATA FROM MIRNOVS in a poloidal arragment similar to Mirnov positions
+    Args
+    
+    """
     #plt.figure()
     fig, axs = plt.subplots(4, 4, sharex=True)
     coilNr=0
@@ -210,10 +219,11 @@ def plotAll2(times_, data_, show=True, title='',  ylim=0.0):
     axs[1,2].axis('off')
     axs[2,2].axis('off')
     axs[2,1].axis('off')
-    for coil in data_:
+#    for coil in data_:
+    for i in range(dataArr.shape[0]):
         ax=axs[pltRow[coilNr], pltColumn[coilNr]]
 #        axs[pltRow[coilNr], pltColumn[coilNr]].plot(times_*1e-3, coil)
-        ax.plot(times_*1e-3, coil)
+        ax.plot(times_*1e-3, dataArr[i,:])
         ax.ticklabel_format(style='sci',axis='y', scilimits=(0,0))
         ax.grid(True)
         if ylim >0.0:
@@ -237,8 +247,11 @@ if __name__ == "__main__":
     client = StartSdas()
     Nshot=44278 #Vertical Field
     #vertical coils
-    plotAll2(*getMirnovInt(client, Nshot,correctPre=False), show=True, title="Vertical Field Coils # " +str(Nshot))
+    times, dataH =getMirnovInt(client, Nshot, correctWO='Post')
+    dataHarr = np.array(dataH)
+    plotAllPoloid(times, dataHarr, show=True, title="Horizontal Field Coils # " +str(Nshot),  ylim=1e-4)
+#    plotAll2(*getMirnovInt(client, Nshot,correctPre=False), show=True, title="Vertical Field Coils # " +str(Nshot))
     Nshot=44330 # Horizontal Field
     #horizontal coils
-    plotAll2(*getMirnovInt(client, Nshot,correctPre=False), show=True, title="Horizontal Field Coils # " +str(Nshot))
+#    plotAll2(*getMirnovInt(client, Nshot,correctPre=False), show=True, title="Horizontal Field Coils # " +str(Nshot))
 #    plotAll(*getMirnovs(client, 42966,mirnv_int,True), show=True, title="Horizontal Field Coils")

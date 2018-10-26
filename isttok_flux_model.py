@@ -133,7 +133,7 @@ def buildIs2Bpol():
 def buildIs2BpolA(Vcoil,Hcoil=None,PrimCoil=None):
     """
     Build B poloidal response Matrix on the poloidal field probes from a set of 
-    PFC coil circuits (Vertical + Horizontal)
+    PFC coil circuits (Vertical + Horizontal + Primary)
     Gives poloidal field on each probe for a Is=1A on coils    
     #
 
@@ -141,7 +141,7 @@ def buildIs2BpolA(Vcoil,Hcoil=None,PrimCoil=None):
         Vcoil: numpy.array([RPfcVer,ZPfcVer,TurnsPfcVer])
         
     Returns: 
-        Is2Bpol :
+        Is2Bpol : array [12, 3]
     """
     ns = 2 # number of PFC active independent coils circuits (sources)
 #       number of poloidal probes
