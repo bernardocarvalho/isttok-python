@@ -159,9 +159,14 @@ def buildIs2BpolA(Vcoil,Hcoil=None,PrimCoil=None):
         bpol, brad = mf.BpolBrad(br,bz, tethaProb)
         Is2Bpol[:,0] += Vcoil[k,2] * bpol
     
-    #if Hcoil != None :    
+#    Horizontal Coils  != None 
+    if isinstance(Hcoil, np.ndarray):    
+        for k in range(Hcoil.shape[0]):
+            br,bz= mf.Bloop(Hcoil[k,0], Hcoil[k,1], Rprb, Zprb)
+            bpol, brad = mf.BpolBrad(br,bz, tethaProb)
+            Is2Bpol[:,1] += Hcoil[k,2] * bpol
 
-#    Horizontal Coils
+
     return Is2Bpol
 
 def buildIc2Bpol(RIc, ZIc):
@@ -198,7 +203,7 @@ def buildIc2Bpol(RIc, ZIc):
 #        BZ += Turns[i]*bz 
 
 if __name__ == "__main__":
- Vcl1=np.array([
+    Vcl1=np.array([
        [ 0.60,  0.08, -1.  ],
        [ 0.59,  0.07, -1.  ],
        [ 0.58,  0.07, -1.  ],
@@ -208,6 +213,15 @@ if __name__ == "__main__":
        [ 0.58, -0.07, -5.  ],
        [ 0.35,  0.07,  5.  ],
        [ 0.35, -0.07,  5.  ]])
+    
+    Hcl1=np.array([
+       [ 0.56,  0.08,  1.0  ],
+       [ 0.58,  0.07,  1.0  ],
+       [ 0.58,  0.06,  1.0  ],
+       [ 0.59,  0.07,  1.0  ],
+       [ 0.58, -0.07, -4.0 ]])
+    
+
     np.set_printoptions(precision=3)
     nc = 6 # number of copper shell 'wires'
 #    ns = 1 # number of active coils

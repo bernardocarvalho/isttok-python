@@ -1,3 +1,5 @@
+#http://metis.ipfn.ist.utl.pt/CODAC/IPFN_Software/SDAS/Access/Python
+#
 from sdas.core.SDAStime import Date, Time, TimeStamp
 import numpy as np
 #from StartSdas import StartSdas

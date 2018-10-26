@@ -60,12 +60,12 @@ decimateMARTe = 200.0
 FsamplingMARTe = FsamplingADC / 200.0
 
 #Horizontal Field 44330
-#WoCorr = np.array([-0.0325337 , -0.05863128,  0.00061454, -0.003177  , 
-#      -0.164716, -0.20480262, -0.14225489, -0.16451567, 
+#WoCorr = np.array([-0.0325337 , -0.05863128,  0.00061454, -0.003177  ,
+#      -0.164716, -0.20480262, -0.14225489, -0.16451567,
 #      -0.17596099, -0.04254242, -0.23460759, -0.20731911])
 
-WoCorr = np.array([-0.15 , -0.06,  0.00061454, -0.003177  , 
-      -0.164716, -0.20480262, -0.14225489, -0.16451567, 
+WoCorr = np.array([-0.15 , -0.06,  0.00061454, -0.003177  ,
+      -0.164716, -0.20480262, -0.14225489, -0.16451567,
       -0.17596099, -0.04254242, -0.23460759, -0.20731911])
 
 #
@@ -83,7 +83,7 @@ def getMirnovInt(sdasClient, shot_, correctWO='None', correctPol=True):
         if correctWO == 'Pre':
             lineWo = WoCorr[coilNr] * np.arange(len(times)) * decimateMARTe
             coilData=coilData - lineWo
-        
+
         if correctWO == 'Post':
             LastPt = 300
             slp = coilData[-LastPt] /(len(coilData) - LastPt) #/ decimateMARTe # in LSB
@@ -98,9 +98,9 @@ def getMirnovInt(sdasClient, shot_, correctWO='None', correctPol=True):
         data.append(coilData *0.85e-10 )
         slp = slp / decimateMARTe # in LSB
         slopes.append(slp)
-    slpf= np.array(slopes)   
-    #print(np.array2string(slpf, precision=4))        
-    #print(slopes)        
+    slpf= np.array(slopes)
+    #print(np.array2string(slpf, precision=4))
+    #print(slopes)
     #print(times[-1])
     return times, data
 
@@ -110,7 +110,7 @@ def calcPostWoMirnov(sdasClient, shot_= 0, node=mirnv_int):
         times, coilData, tbs = getSignal(sdasClient, coil, shot_)
         postWo = coilData[-1] / len(times) /decimateMARTe#  times[-1] /1e-6) / Fsampling  # inn LSB
         slopes.append(postWo)
-    WoArr = np.array(slopes)   
+    WoArr = np.array(slopes)
     return WoArr
 
 def getMARTeWo(sdasClient, coilNr=0, shot_=0):
@@ -122,7 +122,7 @@ def getMARTeWo(sdasClient, coilNr=0, shot_=0):
 #        coilData, times, tbs = getSignal(sdasClient, coil, shot_)
 #        postWo = coilData[-1] / len(times) /decimateMARTe#  times[-1] /1e-6) / Fsampling  # inn LSB
 #        slopes.append(postWo)
-    WoNumbers = coilData[0:10] * 1e10 # To rescale to LSB  
+    WoNumbers = coilData[0:10] * 1e10 # To rescale to LSB
     return WoNumbers
 
 #SAVES MIRNOV DATA IN A LIST OF NP.ARRAYS
@@ -136,7 +136,7 @@ def getMirnovs(shot_, node=mirnv_marte_corr, correct=True):
         if correct:
             f=100 #correction length for slope calculation
             slope=0.0
-            
+
             #if node==mirnv_int:
             #    slope=np.linspace(np.mean(coilData[0:f]), np.mean(coilData[-f-1:-1]), num=len(coilData))
 
@@ -200,10 +200,10 @@ def plotAll2(times_, data_, show=True, title='',  ylim=0.0):
     fig.suptitle(title)
    # ax=[]
     #ylim=2.0e6 # Y Axis limit
-    #pltOrder = (11, )  
-    pltRow =    (2, 3,3,3,3, 2 , 1, 0,0,0,0, 1 )  
-    pltColumn = (3, 3,2,1,0, 0 , 0, 0,1,2,3, 3 )  
-   # pltColumn = (11, )  
+    #pltOrder = (11, )
+    pltRow =    (2, 3,3,3,3, 2 , 1, 0,0,0,0, 1 )
+    pltColumn = (3, 3,2,1,0, 0 , 0, 0,1,2,3, 3 )
+   # pltColumn = (11, )
     axs[0,0].set_title('8')
     axs[0,3].set_title('11')
     axs[1,1].axis('off')
@@ -220,10 +220,10 @@ def plotAll2(times_, data_, show=True, title='',  ylim=0.0):
             ax.set_ylim([-ylim, ylim])
         coilNr+=1
         #ax.set_title(str(coilNr))
-        
+
     if show:
         plt.show()
-        
+
 #PLOTS ONE MIRNOV
 def plotMirnov(times_, data_, show=True, title=''):
     plt.figure()
