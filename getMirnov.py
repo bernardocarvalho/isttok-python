@@ -95,7 +95,7 @@ def getMirnovInt(sdasClient, shot_, correctWO='None', correctPol=True):
             if coilNr in [1,2,4,11]:
                 coilData=-coilData #reverse polarity
 #        coilNr +=1
-        if shot_ > 44000:     # Check this numer    
+        if shot_ > 44078:     #  5 September moduels correctio , from 1.0/11.0 to 10.0/11.0  
             data.append(coilData * 0.85e-10 /11.0 ) # Return values in V.s units
         else:
             data.append(coilData * 0.85e-10 ) # Return values in V.s units

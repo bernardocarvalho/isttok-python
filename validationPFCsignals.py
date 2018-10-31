@@ -34,13 +34,23 @@ Hcl1=np.array([
        [ 0.59,  0.07,  1.0  ],
        [ 0.58, -0.07, -4.0 ]])
 
-# Ideal Coil Position
+Hcl2=np.array([
+       [ 0.58,  0.07,  1.0  ],   # wrong placements ?
+       [ 0.58,  0.07,  1.0  ],
+       [ 0.58,  0.07,  1.0  ],
+       [ 0.58,  0.07,  1.0  ],
+       [ 0.35,  -0.07,  1.0  ],
+       [ 0.58, -0.07, -6.0 ]])
+
+Hcl3=np.array([
+       [ 0.58,  0.07,  0.0  ],   
+       [ 0.58, -0.07, -1.0 ]]) # Ideal Coil Position
 
 Vcl=np.array([isttok_mag['RPfcVer'], isttok_mag['ZPfcVer'], isttok_mag['TurnsPfcVer']]).T
 Hcl=np.array([isttok_mag['RPfcHor'], isttok_mag['ZPfcHor'], isttok_mag['TurnsPfcHor']]).T
 Pcl=np.array([isttok_mag['RPfcPrim'], isttok_mag['ZPfcPrim'], isttok_mag['TurnsPfcPrim']]).T
 
-BpolEst=buildIs2Bpol(Vcl, Hcl, Pcl)
+BpolEst=buildIs2Bpol(Vcl, Hcl3, Pcl)
 
 prbNums = np.arange(1,13)
 
