@@ -62,6 +62,18 @@ Num 44267 até #44272
 [ 0.0097 -0.0602  0.002  -0.0103 -0.1549 -0.1806 
 -0.1022 -0.1603 -0.1589  0.0072 -0.2403 -0.16  ]
   
+##30 out '18
+44473 Vert +300A
+44475 Vert -300A
+44476 Hori +250A c/ mirnov12 descomp
+44480 Hori +200A
+44481 Hori -200A
+44499 Prim com resistência externa
+44501 Prim +150A
+44503 Prim -150A ferro saturado
+44505 3 negativos desfasados 50ms
+44507 3 positivos "  "
+
 
 Shots Vertical #44278
 

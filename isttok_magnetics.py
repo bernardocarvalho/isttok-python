@@ -17,7 +17,8 @@ Rmirn = 0.0935  #Mirnov Probe Radius   9.35
 
 nPrb = 12
 # Poloidal Angle of Mirnov probe
-tethaPrb = np.array([(23./24 - i/nPrb)*2*np.pi for i in range(nPrb)])
+#tethaPrb = np.array([(23./24 - i/nPrb)*2*np.pi for i in range(nPrb)])
+tethaPrb = np.array([(345.0  - i *30) for i in range(nPrb)]) /180.0  *np.pi
 
 Rprb =RM + Rmirn * np.cos(tethaPrb)
 Zprb =Rmirn * np.sin(tethaPrb)
