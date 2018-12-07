@@ -85,12 +85,24 @@ def Bloop(a, z0, R, z):
 def BpolBrad(BR,BZ, angles):
     """
     Transformation from Vector in Cylindrical (R,Z) components to 
-    Poloidal and Radial components 
+    Poloidal and Radial components of a probe located in location 'angle'
+    Equivalent to a rotation of coordinate system by angle 
 
     """
-    Bpol=BZ* np.cos(angles) - BR* np.sin(angles)
-    Brad=BZ* np.sin(angles) + BR* np.cos(angles)
+    Brad= + BR* np.cos(angles) + BZ* np.sin(angles)
+    Bpol= - BR* np.sin(angles) + BZ* np.cos(angles)
     return Bpol, Brad
+
+def BpolBradRot(BR,BZ, angles):
+    """
+    Transformation from Vector in Cylindrical (R,Z) components to 
+    Poloidal and Radial components of a probe rotated by 'angle'
+    Equivalent to a rotation of coordinate system by angle 
+
+    """
+    Brad= + BR* np.cos(angles) + BZ* np.sin(angles)
+    Bpol= - BR* np.sin(angles) + BZ* np.cos(angles)
+    return  Brad, Bpol
 
 def Bzloop(a, z):
     """

@@ -45,7 +45,7 @@ def buildLtiModel(RIc, ZIc):
 
     ResCopper = 1.0e-4 # 0.1 mOhm
     aCopper = 10.0e-3  # 'wire' radius 10 mm
-    ns = 2 # number of active coil circuits
+    ns = 3 # number of active coil circuits
     nc= len(RIc) 
      
     # mutual inductance matrices between the elements of the passive structure
@@ -98,7 +98,7 @@ def buildIs2Bpol():
     Returns: 
         Is2Bpol :
     """
-    ns = 2 # number of PFC active independent coils circuits (sources)
+    ns = 3 # number of PFC active independent coils circuits (sources)
 #       number of poloidal probes
     nPrb = isttok_mag['nPrb']
     
@@ -220,7 +220,15 @@ if __name__ == "__main__":
        [ 0.58,  0.06,  1.0  ],
        [ 0.59,  0.07,  1.0  ],
        [ 0.58, -0.07, -4.0 ]])
-    
+
+#Optimization Andre 10/2018   0.83 I gain
+    VPfcOptim2=np.array([
+       [ 0.5547 -0.1125,  -5.],
+       [ 0.5264 -0.1268,  -5.],
+       [ 0.3905 -0.1204,   5.],
+       [ 0.3803, -0.1089, 5.]])
+
+
 
     np.set_printoptions(precision=3)
     nc = 6 # number of copper shell 'wires'

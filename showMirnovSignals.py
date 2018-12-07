@@ -6,7 +6,7 @@ Created on Wed Oct 31 14:23:33 2018
 """
 
 import numpy as np
-from isttok_magnetics import isttok_mag, buildIs2Bpol
+#from isttok_magnetics import isttok_mag, buildIs2Bpol
 
 import matplotlib.pyplot as plt
 from StartSdas import StartSdas
