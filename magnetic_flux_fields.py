@@ -62,7 +62,7 @@ def Aphi(a, z0, R, z):
 
 def Bloop(a, z0, R, z):
     """
-    Poloida Magnetic field created by an axisymetric current ring at a,z0 (I=1A) in (R,Z)
+    Poloidal Magnetic field created by an axisymetric current ring at a,z0 (I=1A) in (R,Z)
     Calculation by Elliptic Integrals
 
     Args:
@@ -93,10 +93,10 @@ def BpolBrad(BR,BZ, angles):
     Bpol= - BR* np.sin(angles) + BZ* np.cos(angles)
     return Bpol, Brad
 
-def BpolBradRot(BR,BZ, angles):
+def BradBpol(BR,BZ, angles):
     """
     Transformation from Vector in Cylindrical (R,Z) components to 
-    Poloidal and Radial components of a probe rotated by 'angle'
+    Radial and Poloidal   components of a probe rotated by 'angle'.
     Equivalent to a rotation of coordinate system by angle 
 
     """
@@ -143,9 +143,9 @@ def mutualL(a, z0, R, z):
 
 #ISTTOK
 #
-rm = 0.085 #Minor radius
+rm = 0.085 #Limiter minor radius
 RM = 0.46   # Major radius
-Rmirn = 0.0935  #Raio do centro às mirnov  9.35  
+Rmirn = 0.0935  #Mirnov Coil radius 
 
 n_pbrs = 12
 angles_pbr = np.array([(23./24 - i/n_pbrs)*2*np.pi for i in range(n_pbrs)])
@@ -165,34 +165,37 @@ if __name__ == "__main__":
     Rprb =ISTTOK['RM']+ ISTTOK['Rmirn'] * np.cos(angles_pbr)
     zprb =ISTTOK['Rmirn'] * np.sin(angles_pbr)
     
-    a=Aphi(0.46, 0.0, 0.2, 0)
-    b=Bzloop(0.46, .1)
+#    a=Aphi(0.46, 0.0, 0.2, 0)
+#    b=Bzloop(0.46, .1)
     
 #    br,bz=Bloop(0.46, 0.0, 1e-8, .1)
-    #Wire loop in the center of vessel
     #Horizontal Coils: 2 coils , 4 turns, R1,2=58 [cm],z=±7[cm]
     # Rhor=0.58
     # Zhor =0.07
 
     #Horizontal Coils: 2 coils , 4 turns, R1,2=58 [cm],z=±7[cm]
-    Rhor =[0.58, 0.58,]
-    Zhor =[0.07, -0.07]
-    HorTurns=[4., -4.]
+#    Rhor =[0.58, 0.58,]
+#    Zhor =[0.07, -0.07]
+#    HorTurns=[4., -4.]
 
     #Vertical Coils: 4 coils, 5 turns, R1,2=58 [cm],R2,3=35 [cm],z=±7 [cm]
-    Rver =[0.58, 0.58, 0.35, 0.35]
-    Zver =[0.07, -0.07, 0.07, -0.07]
-    Turns=[-5., -5., 5., 5.]
-    BR = 0.0 
-    BZ = 0.0
-    for i in range(len(Turns)):
-        br,bz=Bloop(Rver[i], Zver[i], Rprb, zprb)
-        BR += Turns[i]*br
-        BZ += Turns[i]*bz 
+#    Rver =[0.58, 0.58, 0.35, 0.35]
+#    Zver =[0.07, -0.07, 0.07, -0.07]
+#    Turns=[-5., -5., 5., 5.]
+#    BR = 0.0 
+#    BZ = 0.0
+#    for i in range(len(Turns)):
+#        br,bz=Bloop(Rver[i], Zver[i], Rprb, zprb)
+#        BR += Turns[i]*br
+#        BZ += Turns[i]*bz 
         
-        # mutual inductance matrices between the elements of the passive structure
-    bpol, brad = BpolBrad(BR,BZ, angles_pbr)
-    Bpols=bpol # Poloidal field for I=1A in the coil (Vert)
+    #Wire loop in the center of vessel
+    Rwire = ISTTOK['RM']; Zwire  =0.0
+    BR,BZ =Bloop(Rwire, Zwire, Rprb, zprb)
+        
+#    bpol, brad = BpolBrad(BR,BZ, angles_pbr)
+    brad, bpol  = BradBpol(BR,BZ, angles_pbr)
+#    Bpols=bpol # Poloidal field for I=1A in the coil 
     
 #     
     np.set_printoptions(precision=3)

@@ -40,33 +40,42 @@ def getFluxCoilData(sdasClient, shot_, nodes=flux_int):
 #    Nov  8 10:34 44534    
 # 160913 Nov 12 11:34 44560    
 
-if __name__ == "__main__":
-    client = StartSdas()
-    #Nshot=44776 # " Shot with HOrizontal field
-    #Nshot=44700 # "Informatic Shot, no fields
-    Nshot = 44804 # Shot with Plasma EO offset corrected 
-
-    uVscale=1e6 # Plot values in uV.s
+def plotFluxCoilIntegrated(shot):
+    VertScale =  1.7102e-4 / 2.0e6 # LSB to Volt * Sampling Period
+    #uVscale=1e6 # Plot values in uV.s
     
     times, dataInt =getFluxCoilData(client, Nshot,  nodes=flux_int)
     fig, ax = plt.subplots()
     fig.suptitle("Flux Integrated data,  Shot# " +str(Nshot))
-    lines = ax.plot(times,dataInt.T * uVscale) 
+    lines = ax.plot(times,dataInt.T * VertScale) 
     ax.legend(lines, ['c1', 'c2', 'c3','c4'],loc='right')
-    ax.set_ylabel('Flux / uV.s')
+    ax.set_ylabel('Flux / V.s')
     ax.set_xlabel('Time / us')
     plt.show()    
 
-    lsbVscale=1/2**14 # Plot values in uV.s
+def plotFluxCoilData(shot):
+    lsbVscale=1/2**14 # Raw Data must be shifted 14 bits to the right
+    lsbVscale= lsbVscale *  1.7102e-4  # LSB to Volt
     times, dataRaw =getFluxCoilData(client, Nshot,  nodes=flux_adc_raw)
     fig, ax = plt.subplots()
     fig.suptitle("Flux Raw data,  Shot# " +str(Nshot))
     lines = ax.plot(times,dataRaw.T * lsbVscale) 
     ax.legend(lines, ['c1', 'c2', 'c3','c4'],loc='right')
-    ax.set_ylabel('Data / LSB')
+    ax.set_ylabel('Data / V')
     ax.set_xlabel('Time / us')
     plt.show()  
-    eo=np.average(dataRaw,axis=1) * lsbVscale # Vlaues have to be 
+    
+if __name__ == "__main__":
+    client = StartSdas()
+    #Nshot=44776 # " Shot with HOrizontal field
+    #Nshot=44700 # "Informatic Shot, no fields
+    Nshot = 44804 # Shot with Plasma EO offset corrected 
+    
+    plotFluxCoilData(Nshot)
+    plotFluxCoilIntegrated(Nshot)
+    
+
+#    eo=np.average(dataRaw,axis=1) * lsbVscale # Vlaues have to be 
 
     # Nshot=44775  eo [-614,  527, -212,   99]
     # Nshot=44778  eo [-612,  518, -215,   96]
