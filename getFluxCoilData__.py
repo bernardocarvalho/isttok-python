@@ -20,6 +20,16 @@ mirnv_int=['MARTE_NODE_IVO3.DataCollection.Channel_129',
 'MARTE_NODE_IVO3.DataCollection.Channel_139',
 'MARTE_NODE_IVO3.DataCollection.Channel_140']
 
+flux_int=['MARTE_NODE_IVO3.DataCollection.Channel_141',
+'MARTE_NODE_IVO3.DataCollection.Channel_142',
+'MARTE_NODE_IVO3.DataCollection.Channel_143',
+'MARTE_NODE_IVO3.DataCollection.Channel_144']
+
+flux_adc_raw=['MARTE_NODE_IVO3.DataCollection.Channel_157',
+'MARTE_NODE_IVO3.DataCollection.Channel_158',
+'MARTE_NODE_IVO3.DataCollection.Channel_159',
+'MARTE_NODE_IVO3.DataCollection.Channel_160']
+
 mirnv_Polarity=[-1, -1, 1, -1, 1, 1, 1, 1, 1, 1, -1, 1, 1]
 
 mirn_adc_raw=['MARTE_NODE_IVO3.DataCollection.Channel_145',
@@ -59,18 +69,7 @@ FsamplingADC = 2.0e6
 decimateMARTe = 200.0
 FsamplingMARTe = FsamplingADC / 200.0
 
-#Horizontal Field 44330
-#WoCorr = np.array([-0.0325337 , -0.05863128,  0.00061454, -0.003177  ,
-#      -0.164716, -0.20480262, -0.14225489, -0.16451567,
-#      -0.17596099, -0.04254242, -0.23460759, -0.20731911])
 
-WoCorr = np.array([-0.15 , -0.06,  0.00061454, -0.003177  ,
-      -0.164716, -0.20480262, -0.14225489, -0.16451567,
-      -0.17596099, -0.04254242, -0.23460759, -0.20731911])
-
-#
-       #        slp = (coilData[-1] / times[-1] /1e-6) / FsamplingADC  # inn LSB
-       #    slope=np.linspace(np.mean(coilData[0:f]), np.mean(coilData[-f-1:-1]), num=len(coilData))
 
 def getMirnovInt(sdasClient, shot_, correctWO='None', correctPol=True):
     node=mirnv_int
@@ -95,7 +94,7 @@ def getMirnovInt(sdasClient, shot_, correctWO='None', correctPol=True):
             if coilNr in [1,2,4,11]:
                 coilData=-coilData #reverse polarity
 #        coilNr +=1
-        if shot_ > 44078:     #  5 September 2018 modules input correction , from 1.0/11.0 to 10.0/11.0  
+        if shot_ > 44078:     #  5 September moduels correctio , from 1.0/11.0 to 10.0/11.0  
             data.append(coilData * 0.85e-10 /10.0 ) # Return values in V.s units
         else:
             data.append(coilData * 0.85e-10 ) # Return values in V.s units

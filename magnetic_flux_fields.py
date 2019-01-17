@@ -204,9 +204,10 @@ if __name__ == "__main__":
     print('Bradial:')
     print(brad)
     print('BR:')
-    print(br)
+    print(BR)
     print('BZ:')
-    print(bz)
+    print(BZ
+          )
     
     #bpol * 1e7
     #brad * 1e7
@@ -219,4 +220,8 @@ if __name__ == "__main__":
     #plt.ylim((-0.2, 0.2 ))
     plt.show()
     
+    fig, ax = plt.subplots()
+    ax.stem(range(1,13), abs(bpol))
+    plt.show()
+
     #plt.plot(angles_pbr, bz, angles_pbr, br)

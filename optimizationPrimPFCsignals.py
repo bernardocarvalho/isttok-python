@@ -26,6 +26,18 @@ Pcl=np.array([isttok_mag['RPfcPrim'], isttok_mag['ZPfcPrim'], isttok_mag['TurnsP
 
 BpolEst=buildIs2Bpol(Vcl, Hcl, Pcl)
 
+Pcl1=np.array([
+       [ 0.615,  0.14,  14.0  ],   
+       [ 0.62, -0.13, 0.0 ]]) # Ideal Coil Position
+
+Pcl2=np.array([
+       [ 0.62,  0.13,  0.0  ],  # Ideal Coil Position  
+       [ 0.615, -0.14, 14.0 ]])
+
+BpolEst1=buildIs2Bpol(Vcl, Hcl, Pcl1)
+
+BpolEst2=buildIs2Bpol(Vcl, Hcl, Pcl2)
+
 prbNums = np.arange(1,13)
 
 client = StartSdas()
@@ -33,7 +45,7 @@ client = StartSdas()
 B2FluxMirn= 50 * 49e-6
 scale=1e6 # values in uV.s
 
-Nshot=44501 # Primary
+Nshot=44503 # Primary
 PfcPrimCurrent = 157.0 # np.average(coilPrimData[4500:5500])=  156.86076
 
 #Nshot=44499 # Primary com resistência externa
@@ -47,7 +59,7 @@ PfcPrimCurrent = 157.0 # np.average(coilPrimData[4500:5500])=  156.86076
 
 flatSample = 5500 # sample with flat values
 
-#BpolEstTot = BpolEst2 + BpolEst_4 + BpolEst_8 + BpolEst11
+BpolEstTot = BpolEst1 + BpolEst2
 
 times, dataV =getMirnovInt(client, Nshot, correctWO='Post');
 dataVarr =np.array(dataV)
@@ -64,10 +76,13 @@ dataVarr =np.array(dataV)
 
 fig, ax = plt.subplots()
 fig.suptitle("Primary PFC # " +str(Nshot) + ", Sample#: "  +str(flatSample) )
-linesV2 = ax.plot(prbNums, BpolEst[:,2]*B2FluxMirn*PfcPrimCurrent *scale,label='Primary Pfc Field Estimated ') #   
-#linesV4 = ax.plot(prbNums, BpolEst_4[:,0]*B2FluxMirn*PfcVCurrent *scale,label='Ver Pfc 4 Estimated ') #   
+#linesV2 = ax.plot(prbNums, BpolEst[:,2]*B2FluxMirn*PfcPrimCurrent *scale,label='Primary Pfc Field Estimated ') #   
+#linesV1 = ax.plot(prbNums, BpolEst1[:,2]*B2FluxMirn*PfcPrimCurrent *scale,label='Primary  Pfc 1  Field Estimated ') #   
+#linesV2 = ax.plot(prbNums, BpolEst2[:,2]*B2FluxMirn*PfcPrimCurrent *scale,label='Primary Pfc 2 Estimated ') #   
+#linesV = ax.plot(prbNums, BpolEst_4[:,0]*B2FluxMirn*PfcPrimCurrent *scale,label='Ver Pfc 4 Estimated ') #   
 #linesV8 = ax.plot(prbNums, BpolEst_8[:,0]*B2FluxMirn*PfcVCurrent *scale,label='Ver Pfc 8 Estimated ') #   
 #linesV11 = ax.plot(prbNums, BpolEst11[:,0]*B2FluxMirn*PfcVCurrent *scale,label='Ver Pfc 11 Estimated ') #   
+linesTot = ax.plot(prbNums, BpolEstTot[:,2]*B2FluxMirn*PfcPrimCurrent *scale,label='Primary Total Estimated ') #   
 #linesTot = ax.plot(prbNums,BpolEstTot[:,0]  * B2FluxMirn * PfcVCurrent *scale,label='Ver Pfc Total Estimated ') #   
 linesMirnV = ax.plot(prbNums,dataVarr[:,flatSample]*scale, label='measured Field') #   
 ax.set_xticks(prbNums)

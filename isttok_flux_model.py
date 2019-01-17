@@ -25,7 +25,7 @@ from isttok_magnetics import isttok_mag
 
 from getMirnov import FsamplingMARTe
 
-def buildLtiModel(RIc, ZIc):
+def buildLtiModel(RIc, ZIc, ResIc):
     """
     Build LTI system state model for a asissymetric Tokamak with passive conductors
     # State variable: Psi_c (Pol Flux at the eddy current positions)
@@ -86,7 +86,7 @@ def buildLtiModel(RIc, ZIc):
     return A, Bs, C, Ds  
 
 
-def buildIs2Bpol():
+def buildIs2BpolOld():
     """
     Build B poloidal response Matrix on the poloidal field probes from a set of 
     PFC coil circuits (Vertical + Horizontal)
@@ -130,7 +130,7 @@ def buildIs2Bpol():
     return Is2Bpol
 
 
-def buildIs2BpolA(Vcoil,Hcoil=None,PrimCoil=None):
+def buildIs2Bpol(Vcoil,Hcoil=None,PrimCoil=None):
     """
     Build B poloidal response Matrix on the poloidal field probes from a set of 
     PFC coil circuits (Vertical + Horizontal + Primary)
@@ -156,7 +156,7 @@ def buildIs2BpolA(Vcoil,Hcoil=None,PrimCoil=None):
 #    Vertical Coils
     for k in range(Vcoil.shape[0]):
         br,bz= mf.Bloop(Vcoil[k,0], Vcoil[k,1], Rprb, Zprb)
-        bpol, brad = mf.BpolBrad(br,bz, tethaProb)
+        brad, bpol = mf.BradBpol(br,bz, tethaProb)
         Is2Bpol[:,0] += Vcoil[k,2] * bpol
     
 #    Horizontal Coils  != None 
@@ -223,9 +223,9 @@ if __name__ == "__main__":
 
 #Optimization Andre 10/2018   0.83 I gain
     VPfcOptim2=np.array([
-       [ 0.5547 -0.1125,  -5.],
-       [ 0.5264 -0.1268,  -5.],
-       [ 0.3905 -0.1204,   5.],
+       [ 0.5547, -0.1125,  -5.],
+       [ 0.5264, -0.1268,  -5.],
+       [ 0.3905, -0.1204,   5.],
        [ 0.3803, -0.1089, 5.]])
 
 
@@ -236,7 +236,7 @@ if __name__ == "__main__":
     ResCopper = 1.0e-4 # 0.1 mOhm
     aCopper = 10.0e-3  # 'wire' radius 10 mm
     
-    Is2Bpol=buildIs2Bpol()
+    Is2Bpol=buildIs2Bpol(VPfcOptim2,Hcl1)
     
     # make heaviside current signal
     Imax = 400 #A
