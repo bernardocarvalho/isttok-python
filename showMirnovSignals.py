@@ -23,8 +23,16 @@ scale=1e6 # values in uV.s
 #PfcVCurrent = -400.0 # 
 #flatSample = 5500 # sample with flat values
 #Nshot=44499 # Primary  com resistência externa
-Nshot=44503 # Primary -150A ferro saturado
+#Nshot=44750
+#Nshot =44601
+#Nshot = 44769
+#Nshot = 44833 
+#Nshot = 45015 # Plasma Shot
+#Nshot = 45078 #Vertical -+400A, 400ms
+#Nshot = 45076 #Horizontal -+200A, 400ms
 
+#Nshot =45076 #Horizontal -+200A, 400ms
+Nshot = 45256 #com terminação 180ohm no canal 142 do marte
 
 times, dataMirn =getMirnovInt(client, Nshot, correctWO='Post');
 dataMirnArr =np.array(dataMirn)
