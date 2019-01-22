@@ -23,8 +23,8 @@ if __name__ == "__main__":
 
     #Nshot = 45083 #Primario +140A, 400ms
     Iprim = 140 
-    Nshot = 45210# Primario +140A sem terminação 
-    #Nshot = 45256 #Primario +140A com terminação 180ohm no canal 142 do marte    
+    Nshot = 45210# Primario triangle +140A sem terminação 
+    #Nshot = 45256 #Primario triangle +140A com terminação 180ohm no canal 142 do marte    
     
     node= flux_int[0]
     signalStructArray=client.getData(node,'0x0000', Nshot)
